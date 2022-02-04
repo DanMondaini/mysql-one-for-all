@@ -1,65 +1,59 @@
 DROP DATABASE IF EXISTS SpotifyClone;
+
 CREATE DATABASE SpotifyClone;
 
-DROP TABLE IF EXISTS SpotifyClone.plano;
 CREATE TABLE SpotifyClone.plano(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+	id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(50) NOT NULL,
     preco DOUBLE NOT NULL
-) engine = InnoDB;
+) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS SpotifyClone.usuario;
+CREATE TABLE SpotifyClone.artista(
+	  id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE SpotifyClone.album(
+	  id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(50) NOT NULL,
+    artista_id INT NOT NULL,
+    ano_lancamento INT NOT NULL,
+    FOREIGN KEY (artista_id) REFERENCES SpotifyClone.artista (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE SpotifyClone.cancao(
+	  id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(50) NOT NULL,
+    album_id INT NOT NULL,
+    duracao_segundos INT NOT NULL,
+    FOREIGN KEY (album_id) REFERENCES SpotifyClone.album (id)
+) ENGINE=InnoDB;
+
 CREATE TABLE SpotifyClone.usuario(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+	  id INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(50) NOT NULL,
     idade INT NOT NULL,
     data_assinatura DATE NOT NULL,
     plano_id INT NOT NULL,
-    FOREIGN KEY(plano_id) REFERENCES SpotifyClone.plano(id)
-) engine = InnoDB;
+    FOREIGN KEY (plano_id) REFERENCES SpotifyClone.plano (id)
+) ENGINE=InnoDB;
 
-DROP TABLE IF EXISTS SpotifyClone.artista;
-CREATE TABLE SpotifyClone.artista(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    nome VARCHAR(50) NOT NULL
-) engine = InnoDB;
-
-DROP TABLE IF EXISTS SpotifyClone.usuario_artista;
-CREATE TABLE SpotifyClone.usuario_artista(
-    artista_id INT NOT NULL,
-    usuario_id INT NOT NULL,
-    PRIMARY KEY(artista_id, usuario_id),
-    FOREIGN KEY(artista_id) REFERENCES SpotifyClone.artista(id),
-    FOREIGN KEY(usuario_id) REFERENCES SpotifyClone.usuario(id)
-) engine = InnoDB;
-
-DROP TABLE IF EXISTS SpotifyClone.album;
-CREATE TABLE SpotifyClone.album(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL,
-    ano_lancamento INT NOT NULL,
-    artista_id INT NOT NULL,
-    FOREIGN KEY(artista_id) REFERENCES SpotifyClone.artista(id)
-) engine = InnoDB;
-
-DROP TABLE IF EXISTS SpotifyClone.cancao;
-CREATE TABLE SpotifyClone.cancao(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL,
-    duracao INT NOT NULL,
-    album_id INT NOT NULL,
-    FOREIGN KEY(album_id) REFERENCES SpotifyClone.album(id)
-) engine = InnoDB;
-
-DROP TABLE IF EXISTS SpotifyClone.historico_reproducao;
 CREATE TABLE SpotifyClone.historico_reproducao(
     usuario_id INT NOT NULL,
     cancao_id INT NOT NULL,
     data_reproducao DATETIME NOT NULL,
     PRIMARY KEY(usuario_id, cancao_id, data_reproducao),
-    FOREIGN KEY(usuario_id) REFERENCES SpotifyClone.usuario(id),
-    FOREIGN KEY(cancao_id) REFERENCES SpotifyClone.cancao(id)
-) engine = InnoDB;
+    FOREIGN KEY (usuario_id) REFERENCES SpotifyClone.usuario (id),
+    FOREIGN KEY (cancao_id) REFERENCES SpotifyClone.cancao (id)
+) ENGINE=InnoDB;
+
+CREATE TABLE SpotifyClone.usuario_artista(
+	  artista_id INT NOT NULL,
+    usuario_id INT NOT NULL,
+    PRIMARY KEY(artista_id, usuario_id),
+    FOREIGN KEY (artista_id) REFERENCES SpotifyClone.artista (id),
+    FOREIGN KEY (usuario_id) REFERENCES SpotifyClone.usuario (id)
+) ENGINE=InnoDB;
 
 INSERT INTO
 	SpotifyClone.plano(nome, preco)
@@ -68,7 +62,7 @@ VALUES
 	('universitário', 5.99),
 	('pessoal', 6.99),
 	('familiar', 7.99);
-
+    
 INSERT INTO
 	SpotifyClone.artista(nome)
 VALUES
@@ -78,7 +72,7 @@ VALUES
     ('Freedie Shannon'),
     ('Tyler Isle'),
     ('Fog');
-
+    
 INSERT INTO
 	SpotifyClone.album(nome, artista_id, ano_lancamento)
 VALUES
@@ -94,7 +88,7 @@ VALUES
     ('Apparatus', 6, 2015);
 
 INSERT INTO 
-	SpotifyClone.cancao(nome, album_id, duracao)
+	SpotifyClone.cancao(nome, album_id, duracao_segundos)
 VALUES
 	('Soul For Us', 1, 200),
 	('Reflections Of Magic', 1, 163),
@@ -218,3 +212,4 @@ VALUES
   (9, 3),
   (10, 2),
   (10, 6);
+  
